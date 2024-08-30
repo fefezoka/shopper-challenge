@@ -5,6 +5,12 @@ import { $Enums } from '@prisma/client';
 
 export class UploadRequestDTO {
   @ApiProperty()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return value.replace(/^data:image\/[a-z]+;base64,/, '');
+    }
+    return value;
+  })
   @IsBase64()
   image: string;
 

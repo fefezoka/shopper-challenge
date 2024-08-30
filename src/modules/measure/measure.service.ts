@@ -1,10 +1,4 @@
 import {
-  GenerateContentRequest,
-  GenerateContentResult,
-  GoogleGenerativeAI,
-  Part,
-} from '@google/generative-ai';
-import {
   ConflictException,
   Injectable,
   NotFoundException,
@@ -17,10 +11,14 @@ import { UploadRequestDTO } from 'src/modules/measure/dtos/upload-request.dto';
 import { UploadResponseDTO } from 'src/modules/measure/dtos/upload-response.dto';
 import { MeasureEntity } from 'src/modules/measure/entities/measure.entity';
 import { randomUUID } from 'node:crypto';
+import { GeminiService } from 'src/modules/gemini/gemini.service';
 
 @Injectable()
 export class MeasureService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly gemini: GeminiService,
+  ) {}
 
   findUnique(measure_uuid: string): Promise<MeasureEntity | null> {
     return this.prisma.measure.findUnique({ where: { measure_uuid } });
@@ -48,15 +46,6 @@ export class MeasureService {
     return !!measure;
   }
 
-  async generateContent(
-    request: GenerateContentRequest | string | Array<string | Part>,
-  ): Promise<GenerateContentResult> {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
-    return await model.generateContent(request);
-  }
-
   async upload(uploadRequestDTO: UploadRequestDTO): Promise<UploadResponseDTO> {
     const isMonthMeasurementAlreadyBeenTaken =
       await this.isMonthMeasurementAlreadyBeenTaken(
@@ -71,7 +60,7 @@ export class MeasureService {
       });
     }
 
-    const generatedContent = await this.generateContent([
+    const generatedContent = await this.gemini.generateContent([
       'Qual o valor contido no medidor? Me traga como resposta apenas o valor numérico',
       {
         inlineData: {
