@@ -10,23 +10,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { $Enums } from '@prisma/client';
+import { writeFileSync } from 'fs';
 import { PrismaService } from 'src/database/prisma.service';
 import { ConfirmRequestDTO } from 'src/modules/measure/dtos/confirm-request.dto';
 import { UploadRequestDTO } from 'src/modules/measure/dtos/upload-request.dto';
 import { UploadResponseDTO } from 'src/modules/measure/dtos/upload-response.dto';
 import { MeasureEntity } from 'src/modules/measure/entities/measure.entity';
+import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class MeasureService {
   constructor(private readonly prisma: PrismaService) {}
-
-  async findMany() {
-    return this.prisma.measure.findMany();
-  }
-
-  async deleteMany() {
-    return this.prisma.measure.deleteMany();
-  }
 
   findUnique(measure_uuid: string): Promise<MeasureEntity | null> {
     return this.prisma.measure.findUnique({ where: { measure_uuid } });
@@ -87,7 +81,14 @@ export class MeasureService {
       },
     ]);
 
-    const measureValue = generatedContent.response.text();
+    const measureValue = Number(generatedContent.response.text());
+
+    const baseUrl = 'http:localhost:3000';
+    const imageUrl = `/public/${randomUUID()}.jpg`;
+
+    writeFileSync(imageUrl, uploadRequestDTO.image, {
+      encoding: 'base64',
+    });
 
     const createMeasureResponse = await this.prisma.measure.create({
       data: {
@@ -100,14 +101,14 @@ export class MeasureService {
           },
         },
         measure_type: uploadRequestDTO.measure_type,
-        image_url: '',
+        image_url: baseUrl + imageUrl,
         measure_datetime: uploadRequestDTO.measure_datetime,
-        measure_value: Number(measureValue),
+        measure_value: measureValue,
       },
     });
 
     return {
-      image_url: '',
+      image_url: baseUrl + imageUrl,
       measure_value: createMeasureResponse.measure_value,
       measure_uuid: createMeasureResponse.measure_uuid,
     };

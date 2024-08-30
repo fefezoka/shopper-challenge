@@ -20,16 +20,6 @@ import { MeasureListResponseDTO } from 'src/modules/measure/dtos/measure-list-re
 export class MeasureController {
   constructor(private readonly measureService: MeasureService) {}
 
-  @Get('find-many')
-  findMany() {
-    return this.measureService.findMany();
-  }
-
-  @Delete('delete-many')
-  deleteMany() {
-    return this.measureService.deleteMany();
-  }
-
   @Post('upload')
   @ApiResponse({
     status: 200,
