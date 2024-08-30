@@ -83,8 +83,8 @@ export class MeasureService {
 
     const measureValue = Number(generatedContent.response.text());
 
-    const baseUrl = 'http:localhost:3000';
-    const imageUrl = `/public/${randomUUID()}.jpg`;
+    const baseUrl = 'http:localhost:3000/';
+    const imageUrl = `public/${randomUUID()}.jpg`;
 
     writeFileSync(imageUrl, uploadRequestDTO.image, {
       encoding: 'base64',
