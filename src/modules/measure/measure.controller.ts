@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { MeasureService } from './measure.service';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UploadResponseDTO } from 'src/modules/measure/dtos/upload-response.dto';
 import { UploadRequestDTO } from 'src/modules/measure/dtos/upload-request.dto';
 import { ConfirmRequestDTO } from 'src/modules/measure/dtos/confirm-request.dto';
@@ -17,6 +17,7 @@ import { MeasureListRequestDTO } from 'src/modules/measure/dtos/measure-list-req
 import { MeasureListResponseDTO } from 'src/modules/measure/dtos/measure-list-response.dto';
 
 @Controller()
+@ApiTags('Measure')
 export class MeasureController {
   constructor(private readonly measureService: MeasureService) {}
 

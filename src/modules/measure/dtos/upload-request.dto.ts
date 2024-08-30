@@ -22,7 +22,10 @@ export class UploadRequestDTO {
   @IsDateString()
   measure_datetime: Date;
 
-  @ApiProperty({ enum: $Enums.MeasureType })
+  @ApiProperty({
+    enum: $Enums.MeasureType,
+    default: 'WATER or GAS',
+  })
   @Transform(({ value }) => ('' + value).toUpperCase())
   @IsEnum($Enums.MeasureType)
   measure_type: $Enums.MeasureType;

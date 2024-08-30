@@ -17,7 +17,7 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Teste shopper')
+    .setTitle('Shopper challenge')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

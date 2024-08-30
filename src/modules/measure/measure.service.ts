@@ -73,9 +73,9 @@ export class MeasureService {
     const measureValue = Number(generatedContent.response.text());
 
     const baseUrl = 'http:localhost:3000/';
-    const imageUrl = `public/${randomUUID()}.jpg`;
+    const imagePath = `public/${randomUUID()}.jpg`;
 
-    writeFileSync(imageUrl, uploadRequestDTO.image, {
+    writeFileSync(imagePath, uploadRequestDTO.image, {
       encoding: 'base64',
     });
 
@@ -90,14 +90,14 @@ export class MeasureService {
           },
         },
         measure_type: uploadRequestDTO.measure_type,
-        image_url: baseUrl + imageUrl,
+        image_url: baseUrl + imagePath,
         measure_datetime: uploadRequestDTO.measure_datetime,
         measure_value: measureValue,
       },
     });
 
     return {
-      image_url: baseUrl + imageUrl,
+      image_url: baseUrl + imagePath,
       measure_value: createMeasureResponse.measure_value,
       measure_uuid: createMeasureResponse.measure_uuid,
     };
